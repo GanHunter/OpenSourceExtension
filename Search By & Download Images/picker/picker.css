@@ -1,0 +1,143 @@
+:root {
+	--main-border: hsl(197, 91%, 63%);
+}
+
+/* container */
+#container {
+  padding: 60px 0;
+}
+
+/* image container */
+.image-container {
+	padding: 1em;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.image-checkbox {
+	position: relative;
+  border: 1px solid var(--main-border);
+  float: left;
+  margin: 0.5em;
+	padding: 0.5em;
+	text-align: center;
+	background: transparent;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+.image-checkbox.checked {
+	background: var(--main-border);
+}
+.image-checkbox.disabled {
+	opacity: 0.2;
+}
+.image-checkbox input {
+	position: absolute;
+	height: 100%;
+	left: -99999px;
+}
+.image-checkbox input:focus + img {
+	outline: 2px dotted rgba(0, 0, 0, 0.4);
+}
+.image-checkbox img {
+	display: block;
+	max-height: calc(var(--previewMaxHeight, 200) * 1px);
+	margin: 0 auto;
+	position: relative;
+}
+.image-checkbox-info {
+	display: block;
+	font-size: 70%;
+	color: white;
+	background: black;
+	line-height: 1;
+	padding: 0.25em 0;
+}
+
+/* toolbar */
+.toolbar {
+	display: flex;
+	padding: 0 1.5em;
+	position: fixed;
+	width: 100%;
+	background: whitesmoke;
+	z-index: 1;
+}
+.toolbar-top {
+	top: 0;
+	border-bottom: 2px solid whitesmoke;
+}
+.toolbar-bottom {
+	bottom: 0;
+	border-top: 2px solid whitesmoke;
+}
+.toolbar input[type=number] {
+	width: 5em;
+}
+.toolbar input[type=range] {
+	width: 7em;
+}
+.toolbar > * {
+	display: flex;
+	align-items: center;
+}
+.toolbar > * + * {
+	margin-left: 1em;
+}
+.toolbar label > *,
+.toolbar-control > * {
+	margin: 0.7em 0;
+}
+.toolbar label > :not(:first-child),
+.toolbar-control > :not(:first-child) {
+	margin-left: 0.5em;
+}
+.flex-stretch {
+	width: auto;
+	flex: 1;
+}
+.match-url {
+	margin-left: 0.5em;
+}
+
+/* images counter */
+.main-container {
+	counter-reset: images-selected images-total;
+}
+.tab-container .image-container {
+	counter-reset: images-tab-selected images-tab-total;
+}
+.image-checkbox {
+	counter-increment: images-total images-tab-total;
+}
+.image-checkbox.checked:not(.disabled) {
+	counter-increment: images-total images-selected images-tab-total images-tab-selected;
+}
+.save::after {
+	content: " (" counter(images-selected) "/" counter(images-total) ")";
+}
+.tab-image-counter {
+	position: absolute;
+	top: -2.5px;
+	left: 1em;
+	background: white;
+	border: 1px solid var(--main-border);
+	padding: 0.1em 0.6em;
+	font-family: monospace;
+	transform: translateY(-50%);
+}
+.tab-image-counter::before {
+	content: counter(images-tab-selected) "/" counter(images-tab-total);
+}
+
+/* tab container */
+.tab-container {
+	margin: 0;
+	padding: 0;
+}
+.tab-container .image-container {
+	margin: 1.4em 1em;
+	padding: 0.5em;
+	border: 5px dashed var(--main-border);
+	position: relative;
+}
