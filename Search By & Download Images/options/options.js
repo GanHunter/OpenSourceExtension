@@ -1,3 +1,4 @@
+/* global pref */
 const backgroundPage = chrome.extension.getBackgroundPage();
 const Provider = backgroundPage.Provider; // class Provider
 const msgTimeout = 1800;
@@ -235,9 +236,9 @@ function createSearchProviderElement(name = '', pic = 'pictures/other.png', url 
 
 /** View binding **/
 
-document.title = `${chrome.i18n.getMessage('extensionName')} | ${chrome.i18n.getMessage('optionsPageTitle')}`;
+document.title = `${chrome.i18n.getMessage('extensionNameSearch')} | ${chrome.i18n.getMessage('optionsPageTitle')}`;
 
-$('#navbarTitle').textContent = chrome.i18n.getMessage('extensionName');
+$('#navbarTitle').textContent = chrome.i18n.getMessage('extensionNameSearch');
 $('#openInBackgroundLabel').textContent = chrome.i18n.getMessage('openInBackgroundLabel');
 
 $('#openTabAtLabel').textContent = chrome.i18n.getMessage('openTabAtLabel');
@@ -348,3 +349,37 @@ function updateUI(storedSettings) {
 
 /* On opening the options page, this will fetch stored settings and update the UI with them. */
 chrome.storage.sync.get(null, updateUI);
+
+
+(function(){
+	var form = document.forms[0];
+	var inputs = form.querySelectorAll("input, textarea, select");
+	
+	pref.bindElement(form, inputs);
+	
+	pref.ready().then(() => {
+		// checkbox supplement
+		const fields = document.querySelectorAll("fieldset.checkbox-supplement");
+		for (const field of fields) {
+			const input = field.parentNode.querySelector(":scope > input");
+			if (!input.checked) {
+				field.disabled = true;
+			}
+			input.addEventListener("prefUpdate", onChange);
+		}
+		
+		function onChange(e) {
+			const input = e.target;
+			const field = input.parentNode.querySelector(":scope > fieldset");
+			if (!field) return;
+			field.disabled = !input.checked;
+		}
+	});
+	
+	browser.runtime.getBrowserInfo()
+		.then(({version}) => {
+			if (+version.split(".")[0] < 57) {
+				document.body.classList.add("version-lt-57");
+			}
+		});
+})();
